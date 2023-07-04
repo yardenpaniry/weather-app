@@ -36,3 +36,34 @@
     transform: rotate(360deg);
   }
 }
+
+.topForm {
+  background-color: #6495ed82;
+  height: 20%;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  padding: 4%;
+}
+
+.inputText {
+  border: none;
+  border-radius: 15px 0px 0px 15px;
+  padding: 3%;
+}
+
+.submitLocation {
+  border: none;
+  border-radius: 0px 15px 15px 0px;
+}
+
+.App {
+  height: 100vh;
+  width: 100vw;
+  text-align: -webkit-center;
+}
+
+.map-container {
+  height: 25%;
+  width: 90%;
+}

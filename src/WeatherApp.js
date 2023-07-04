@@ -2,11 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Location } from "./Location";
 import { useGeolocated } from "react-geolocated";
+import GoogleMapComponent from "./GoogleMap";
 
 const WeatherApp = () => {
   const [location, setLocation] = useState("");
   const [weatherData, setWeatherData] = useState(null);
   const [weatherByLocation, setWeatherByLocation] = useState(false);
+  const [latitude, setLatitude] = useState(0);
+  const [longitude, setLongitude] = useState(0);
 
   const { coords, isGeolocationAvailable, isGeolocationEnabled } =
     useGeolocated({
@@ -15,7 +18,9 @@ const WeatherApp = () => {
       },
       userDecisionTimeout: 5000,
     });
-
+  useEffect(() => {
+    console.log("props.longitude xx: ", longitude);
+  }, [longitude]);
   useEffect(() => {
     if (!isGeolocationAvailable) {
       console.log("coords: Your browser does not support Geolocation");
@@ -24,8 +29,12 @@ const WeatherApp = () => {
       console.log("coords: Geolocation is not enabled");
       console.log("isGeolocationEnabled: ", isGeolocationEnabled);
     } else if (coords) {
-      console.log("coords: ", coords.latitude);
+      console.log("coords: ", typeof coords.latitude);
+      console.log("coords longitude: ", coords.longitude);
+
       getData(coords.latitude, coords.longitude);
+      // setLatitude(coords.latitude);
+      // setLongitude(coords.longitude);
     } else {
     }
   }, [isGeolocationAvailable, isGeolocationEnabled, coords]);
@@ -37,6 +46,8 @@ const WeatherApp = () => {
       setWeatherData(response.data);
       setWeatherByLocation(true);
       console.log("data: ", response.data);
+      setLatitude(response.data.location.lat);
+      setLongitude(response.data.location.lon);
     } catch (error) {
       console.log(error);
     }
@@ -51,6 +62,8 @@ const WeatherApp = () => {
       const response = await axios.get(url);
       setWeatherData(response.data);
       setWeatherByLocation(false);
+      setLatitude(response.data.location.lat);
+      setLongitude(response.data.location.lon);
     } catch (error) {
       console.log(error);
     }
@@ -58,14 +71,17 @@ const WeatherApp = () => {
 
   return (
     <div>
-      <form onSubmit={handleFormSubmit}>
+      <form className="topForm" onSubmit={handleFormSubmit}>
         <input
+          className="inputText"
           type="text"
           placeholder="enter location"
           value={location}
           onChange={(event) => setLocation(event.target.value)}
         ></input>
-        <button type="submit">Get Weather</button>
+        <button className="submitLocation" type="submit">
+          Get Weather
+        </button>
       </form>
 
       {weatherData && (
@@ -79,6 +95,11 @@ const WeatherApp = () => {
           <img src={weatherData.current.condition.icon} alt="Weather Icon" />
         </div>
       )}
+
+      <GoogleMapComponent
+        longitude={longitude}
+        latitude={latitude}
+      ></GoogleMapComponent>
     </div>
   );
 };
