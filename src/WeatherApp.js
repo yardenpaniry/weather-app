@@ -10,7 +10,7 @@ const WeatherApp = () => {
   const [weatherByLocation, setWeatherByLocation] = useState(false);
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
-
+  const [testAlart, setTextAlart] = useState("");
   const { coords, isGeolocationAvailable, isGeolocationEnabled } =
     useGeolocated({
       positionOptions: {
@@ -23,10 +23,10 @@ const WeatherApp = () => {
   }, [longitude]);
   useEffect(() => {
     if (!isGeolocationAvailable) {
-      console.log("coords: Your browser does not support Geolocation");
+      setTextAlart("Your browser does not support Geolocation");
       console.log("isGeolocationAvailable: ", isGeolocationAvailable);
     } else if (!isGeolocationEnabled) {
-      console.log("coords: Geolocation is not enabled");
+      setTextAlart("Geolocation is not enabled");
       console.log("isGeolocationEnabled: ", isGeolocationEnabled);
     } else if (coords) {
       console.log("coords: ", typeof coords.latitude);
@@ -70,7 +70,7 @@ const WeatherApp = () => {
   };
 
   return (
-    <div>
+    <div style={{ textAlign: "-webkit-center" }}>
       <form className="topForm" onSubmit={handleFormSubmit}>
         <input
           className="inputText"
@@ -83,19 +83,22 @@ const WeatherApp = () => {
           Get Weather
         </button>
       </form>
+      <div className="weatherBox">
+        {(!isGeolocationAvailable || !isGeolocationEnabled) && (
+          <div>{testAlart}</div>
+        )}
+        {weatherData && (
+          <div>
+            <h2>Current Weather</h2>
+            {weatherByLocation && <div>weather by your location</div>}
+            <p> {weatherData.location.name}</p>
 
-      {weatherData && (
-        <div>
-          <h2>Current Weather</h2>
-          {weatherByLocation && <div>weather by your location</div>}
-          <p> {weatherData.location.name}</p>
-
-          <p> {weatherData.current.temp_c}°C</p>
-          <p> {weatherData.current.condition.text}</p>
-          <img src={weatherData.current.condition.icon} alt="Weather Icon" />
-        </div>
-      )}
-
+            <p> {weatherData.current.temp_c}°C</p>
+            <p> {weatherData.current.condition.text}</p>
+            <img src={weatherData.current.condition.icon} alt="Weather Icon" />
+          </div>
+        )}
+      </div>
       <GoogleMapComponent
         longitude={longitude}
         latitude={latitude}

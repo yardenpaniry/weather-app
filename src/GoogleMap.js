@@ -19,7 +19,7 @@ const GoogleMapComponent = (props) => {
   // );
 
   return (
-    <div className="App">
+    <div className="GoogleMap">
       {!isLoaded ? (
         <h1>Loading...</h1>
       ) : (
